@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile_dev
+    volumes:
+      - .:/app
+    ports:
+      - ${ROCKET_PORT}:${ROCKET_PORT}
+    networks:
+      - rust
+    environment:
+      - ROCKET_ADDRESS=${ROCKET_ADDRESS}
+      - ROCKET_PORT=${ROCKET_PORT}
+
+networks:
+  rust:

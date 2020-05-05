@@ -1,0 +1,17 @@
+FROM debian:buster-slim
+
+# curl is needed in order to install Rust
+# build-essential is needed to build the app with Cargo
+RUN apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y build-essential curl libssl-dev pkg-config
+
+# Installs Rust & tools
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# The following is mandatory in order to use the Rocket framework
+RUN rustup default nightly
+
+WORKDIR /app
