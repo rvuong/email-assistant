@@ -2,6 +2,8 @@ FROM debian:buster-slim
 
 # curl is needed in order to install Rust
 # build-essential is needed to build the app with Cargo
+# libssl-dev is needed for `cargo build`
+# pkg-config is needed for installing imap dependencies
 RUN apt-get update && \
   apt-get upgrade -y && \
   apt-get install -y build-essential curl libssl-dev pkg-config
