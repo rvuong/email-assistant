@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## 2020-05-27
+### Added
+- A logger based on the `RUST_LOG` env var.
+
 ## 2020-05-19
 ### Changed
 - Changed the security level to STARTTLS when connecting to the IMAP server.
