@@ -12,6 +12,8 @@ services:
     networks:
       - rust
     environment:
+      - DEBUG=${DEBUG}
+      - RUST_LOG=${RUST_LOG}
       - IMAP_HOST=${IMAP_HOST}
       - IMAP_USERNAME=${IMAP_USERNAME}
       - IMAP_PASSWORD=${IMAP_PASSWORD}

@@ -1,3 +1,7 @@
+#[macro_use]
+extern crate log;
+extern crate env_logger;
+
 use std::env;
 use std::error::Error;
 
@@ -5,6 +9,13 @@ mod reader;
 mod receipt;
 
 fn main() -> Result<(), Box<dyn Error>> {
+    env_logger::init();
+
+    let debug: bool = env::var("DEBUG")
+        .expect("Missing or invalid env var: DEBUG")
+        .parse()
+        .unwrap();
+
     let imap_host = env::var("IMAP_HOST").expect("Missing or invalid env var: IMAP_HOST");
     let imap_username =
         env::var("IMAP_USERNAME").expect("Missing or invalid env var: IMAP_USERNAME");
@@ -16,7 +27,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         .parse()
         .unwrap();
 
-    let messages = reader::fetch_inbox(imap_host, imap_username, imap_password, imap_port).unwrap();
+    let messages =
+        reader::fetch_inbox(imap_host, imap_username, imap_password, imap_port, debug).unwrap();
     if messages.len().eq(&0) {
         // No messages need to be processed
         return Ok(());
@@ -34,12 +46,20 @@ fn main() -> Result<(), Box<dyn Error>> {
             .unwrap(),
     };
 
-    // TODO Loops through IMAP messages
+    // Loops through IMAP messages
     for message in messages.iter() {
+        let sender = format!("{}", message.sender);
+        let subject = format!("Re: {}", message.subject);
+        let recipient = if debug {
+            "remy.vuong@davidson.fr".to_string()
+        } else {
+            format!("{}", sender)
+        };
+
         let receipt_message = receipt::ReceiptMessage {
             sender: env::var("SMTP_SENDER").expect("Missing or invalid env var: SMTP_SENDER"),
-            recipient: "remy.vuong@davidson.fr".to_string(), // TODO Should be set dynamically
-            subject: "Re: Cooptation".to_string(),           // TODO Should be set dynamically
+            recipient,
+            subject,
             body: "Your request was received and will be processed shortly.\r\n\r\nBest regards\r\n\r\n--\r\nAssistant".to_string(),   // TODO Should be set dynamically
         };
         let smtp = receipt::SmtpOptions {
