@@ -52,7 +52,7 @@ pub fn fetch_inbox(
         };
 
         let data = self::get_message(message);
-        info!("* Message #{} was fetched (sender: \"{}\", subject: \"{}\")", message_id, data.sender, data.subject);
+        info!("Message #{} was fetched (sender: \"{}\", subject: \"{}\")", message_id, data.sender, data.subject);
 
         // TODO Accurate filtering
         if data.subject.contains("cooptation") {
@@ -101,7 +101,7 @@ fn get_message(message: &Fetch) -> self::Message {
                 m.subject = format!("{}", row_data);
             } else if row_type.eq("From") {
                 // Extract the sender's email address
-                let email_regex = Regex::new(r"^[^<>]*<?(?P<email>[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>?$").unwrap();
+                let email_regex = Regex::new(r"^(From: )?([^<>]*<)?(?P<email>[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*).*$").unwrap();
                 let sender = email_regex.replace(body_row, "$email");
                 m.sender = format!("{}", sender);
             }

@@ -11,6 +11,7 @@ use lettre::{
 use uuid::Uuid;
 
 use self::native_tls::{Protocol, TlsConnector};
+use std::env;
 
 pub struct SmtpOptions {
     pub host: String,
@@ -60,8 +61,14 @@ pub fn send(smtp_options: SmtpOptions, receipt_message: ReceiptMessage) {
         .into_bytes(),
     );
 
-    let result = mailer.send(email);
-    assert!(result.is_ok());
+    let debug: bool = env::var("DEBUG")
+        .expect("Missing or invalid env var: DEBUG")
+        .parse()
+        .unwrap();
+    if !debug {
+        let result = mailer.send(email);
+        assert!(result.is_ok());
+    }
 
     // Explicitly close the SMTP transaction as we enabled connection reuse
     mailer.close();
