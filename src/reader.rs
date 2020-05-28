@@ -12,6 +12,8 @@ pub struct Message {
     pub subject: String,
     pub body: String,
     pub attachment: String,
+    pub message_id: String,
+    pub references: String,
 }
 
 pub fn fetch_inbox(
@@ -52,7 +54,10 @@ pub fn fetch_inbox(
         };
 
         let data = self::get_message(message);
-        info!("Message #{} was fetched (sender: \"{}\", subject: \"{}\")", message_id, data.sender, data.subject);
+        info!(
+            "Message #{} was fetched (sender: \"{}\", subject: \"{}\")",
+            message_id, data.sender, data.subject
+        );
 
         // TODO Accurate filtering
         if data.subject.contains("cooptation") {
@@ -80,6 +85,8 @@ fn get_message(message: &Fetch) -> self::Message {
         subject: "".to_string(),
         body: "".to_string(),       // TODO
         attachment: "".to_string(), // TODO
+        message_id: "".to_string(),
+        references: "".to_string(),
     };
 
     let body = message.body().expect("Missing or invalid body");
@@ -89,7 +96,8 @@ fn get_message(message: &Fetch) -> self::Message {
 
     // Split the header into several rows
     let body_vec = body.split("\r\n");
-    let regex = Regex::new(r"^(?P<type>Subject|From): (?P<data>.*)$").unwrap();
+    let regex =
+        Regex::new(r"^(?P<type>Subject|From|Date|Message-ID|References): (?P<data>.*)$").unwrap();
 
     for body_row in body_vec {
         if regex.is_match(body_row) {
@@ -104,6 +112,16 @@ fn get_message(message: &Fetch) -> self::Message {
                 let email_regex = Regex::new(r"^(From: )?([^<>]*<)?(?P<email>[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*).*$").unwrap();
                 let sender = email_regex.replace(body_row, "$email");
                 m.sender = format!("{}", sender);
+            } else if row_type.eq("Message-ID") {
+                let message_id_regex =
+                    Regex::new(r"^Message-ID: <?(?P<message_id>[a-zA-Z0-9@.-]+)>?").unwrap();
+                let message_id = message_id_regex.replace(body_row, "$message_id");
+                m.message_id = format!("{}", message_id);
+            } else if row_type.eq("References") {
+                let references_regex =
+                    Regex::new(r"^References: <?(?P<references>[a-zA-Z0-9@.-]+)>?").unwrap();
+                let references = references_regex.replace(body_row, "$references");
+                m.references = format!("{}", references);
             }
         }
 

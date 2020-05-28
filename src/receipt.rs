@@ -25,6 +25,8 @@ pub struct ReceiptMessage {
     pub recipient: String,
     pub subject: String,
     pub body: String,
+    pub in_reply_to: String,
+    pub references: String,
 }
 
 pub fn send(smtp_options: SmtpOptions, receipt_message: ReceiptMessage) {
@@ -46,6 +48,22 @@ pub fn send(smtp_options: SmtpOptions, receipt_message: ReceiptMessage) {
     .connection_reuse(ConnectionReuseParameters::ReuseUnlimited)
     .transport();
 
+    let message = [
+        format!(
+            "In-reply-to: {in_reply_to}",
+            in_reply_to = receipt_message.in_reply_to
+        ),
+        format!(
+            "References: {references}",
+            references = receipt_message.references
+        ),
+        format!("Subject: {subject}", subject = receipt_message.subject),
+        "\r\n".to_string(),
+        format!("{body}", body = receipt_message.body),
+        "\r\n\r\n".to_string(),
+    ]
+    .join("\r\n");
+
     let email = SendableEmail::new(
         Envelope::new(
             Some(EmailAddress::new(receipt_message.sender).unwrap()),
@@ -53,12 +71,7 @@ pub fn send(smtp_options: SmtpOptions, receipt_message: ReceiptMessage) {
         )
         .unwrap(),
         Uuid::new_v4().to_string(),
-        format!(
-            "Subject: {subject}\r\n\r\n{body}\r\n\r\n",
-            subject = receipt_message.subject,
-            body = receipt_message.body
-        )
-        .into_bytes(),
+        message.into_bytes(),
     );
 
     let debug: bool = env::var("DEBUG")

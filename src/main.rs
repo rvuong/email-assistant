@@ -56,11 +56,22 @@ fn main() -> Result<(), Box<dyn Error>> {
             format!("{}", sender)
         };
 
+        let references = if message.references.eq("") {
+            format!("<{id}>", id = message.message_id)
+        } else {
+            [
+                format!("<{ref}>", ref = message.references),
+                format!("<{id}>", id = message.message_id),
+            ]
+            .join(" ")
+        };
         let receipt_message = receipt::ReceiptMessage {
             sender: env::var("SMTP_SENDER").expect("Missing or invalid env var: SMTP_SENDER"),
             recipient,
             subject,
             body: "Your request was received and will be processed shortly.\r\n\r\nBest regards\r\n\r\n--\r\nAssistant".to_string(),   // TODO Should be set dynamically
+            in_reply_to: format!("<{}>", message.message_id),
+            references,
         };
         let smtp = receipt::SmtpOptions {
             host: smtp_options.host.clone(),
