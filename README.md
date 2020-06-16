@@ -1,19 +1,21 @@
-# README
+# Email Assistant
 
-This documentation aims to set up a working RUST/Rocket project environment.
+## TL;DR
 
-*Notice: Sometimes you might get an error when building the image. This could be caused by existing `target` files, previously 
-created by the Docker root user, and not being editable by your current user. One way to solve this would be to add the 
-ACL to the current folder.*
+The purpose of *Email Assistant* is to automatically trigger various actions, when specific emails are received.
 
-```bash
-# optional
-sudo setfacl -R -m u:"$(whoami)":rwX $(pwd)
-```
+It should be able to read an Inbox via IMAP, and request a bunch of various APIs. `Email Assistant` will also send an email response in order to keep the user well informed.
+
+`Email Assistant` is composed in several modules:
+
+- [x] an IMAP client, for reading the Inbox
+- [ ] a Natural language processing engine, in order to recognize the user request and act accordingly
+- [ ] an API gateway, to execute the appropriate actions
+- [x] a SMTP client, in order to send email notifications
+- [ ] an error management system, including logs and notifications
 
 ## Dev
 
-Howto get the [dev environment](./README_dev.md) ready
-
+Howto get the [dev environment](./README_dev.md) ready.
 
 Done!
