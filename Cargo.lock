@@ -142,6 +142,7 @@ checksum = "b3a71ab494c0b5b860bdc8407ae08978052417070c2ced38573a9157ad75b8ac"
 name = "death-to-the-pixels"
 version = "0.1.0"
 dependencies = [
+ "base64 0.12.1",
  "env_logger",
  "imap",
  "lettre",

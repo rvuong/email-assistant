@@ -5,6 +5,7 @@ extern crate env_logger;
 use std::env;
 use std::error::Error;
 
+mod eos;
 mod reader;
 mod receipt;
 
@@ -46,6 +47,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             .unwrap(),
     };
 
+    // EOS authentication is required to get the sender's EOS ID
+    let eos_url = "https://eos.davidson.fr/";
+    let eos_username = "admin@davidson.fr";
+    let eos_password = "dv?hgVf8gG2";
+    let _eos_token = eos::authenticate(eos_username, eos_password, eos_url).unwrap();
+    // debug!("_: {}", _eos_token);
+
     // Loops through IMAP messages
     for message in messages.iter() {
         let sender = format!("{}", message.sender);
@@ -53,7 +61,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         let recipient = if debug {
             "remy.vuong@davidson.fr".to_string()
         } else {
-            format!("{}", sender)
+            debug!("Sending receipt message to: {}...", sender);
+
+            sender.to_string()
         };
 
         let references = if message.references.eq("") {
@@ -69,7 +79,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             sender: env::var("SMTP_SENDER").expect("Missing or invalid env var: SMTP_SENDER"),
             recipient,
             subject,
-            body: "Your request was received and will be processed shortly.\r\n\r\nBest regards\r\n\r\n--\r\nAssistant".to_string(),   // TODO Should be set dynamically
+            body: "Your request was received and will be processed shortly.\r\n\r\nBest regards\r\n\r\n--\r\nQuick Ass, your assistant".to_string(), // TODO Should be set dynamically
             in_reply_to: format!("<{}>", message.message_id),
             references,
         };
