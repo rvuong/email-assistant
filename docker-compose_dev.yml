@@ -13,6 +13,7 @@ services:
       - rust
     environment:
       - DEBUG=${DEBUG}
+      - DEBUG_RECIPIENT=${DEBUG_RECIPIENT}
       - RUST_LOG=${RUST_LOG}
       - IMAP_HOST=${IMAP_HOST}
       - IMAP_USERNAME=${IMAP_USERNAME}
@@ -23,6 +24,12 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_SENDER=${SMTP_SENDER}
+      - EOS_URL=${EOS_URL}
+      - EOS_USERNAME=${EOS_USERNAME}
+      - EOS_PASSWORD=${EOS_PASSWORD}
+      - COOPTATION_URL=${COOPTATION_URL}
+      - COOPTATION_USERNAME=${COOPTATION_USERNAME}
+      - COOPTATION_PASSWORD=${COOPTATION_PASSWORD}
 
 networks:
   rust:
