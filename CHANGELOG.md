@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## 2020-06-18
+### Added
+- Fetch a user's EOS ID given her/his email address.
+- Post a cooptation to the API with mocked data.
+
+## 2020-06-16
+### Added
+- Rest API module for EOS, including authentication.
+
 ## 2020-06-16
 ### Changed
 - [README.md](README.md) is now more accurate.

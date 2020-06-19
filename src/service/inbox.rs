@@ -1,3 +1,6 @@
+/**
+ * The purpose of this module is to manage input emails.
+ */
 extern crate base64;
 extern crate native_tls;
 extern crate regex;
@@ -18,14 +21,17 @@ pub struct Email {
     pub references: String,
     pub sender: String,
     pub subject: String,
+    pub attachment: String,
 }
 
 pub struct EmailPart {
     pub header: String,
     pub content: String,
+    pub is_attachment: bool,
+    pub attachment_name: String,
 }
 
-pub fn fetch_inbox(
+pub fn parse(
     host: String,
     username: String,
     password: String,
@@ -102,12 +108,21 @@ fn get_email(data: String) -> Email {
 
     let v = data.splitn(2, DOUBLE_CRLF);
     let mut is_header: bool = true;
+    let mut attachment_fullname = "".to_string();
+
     for r in v {
         if is_header {
             email_header = r.to_string();
             is_header = false;
         } else {
             email_body = self::get_body_parts(email_header.to_string(), r.to_string());
+
+            // Determine the attachment fullname
+            for j in &email_body {
+                if j.is_attachment {
+                    attachment_fullname = j.attachment_name.clone();
+                }
+            }
         }
     }
 
@@ -123,6 +138,7 @@ fn get_email(data: String) -> Email {
         sender,
         subject,
         references,
+        attachment: attachment_fullname,
     }
 }
 
@@ -199,6 +215,7 @@ fn get_body_parts(headers: String, body: String) -> Vec<EmailPart> {
         let mut tmp_content = "".to_string();
         let mut is_attachment: bool = false;
         let mut attachment_filename = "".to_string();
+        let mut attachment_fullname: String = "".to_string();
         for part_element in part_elements {
             if is_header {
                 tmp_header = part_element.to_string();
@@ -217,6 +234,7 @@ fn get_body_parts(headers: String, body: String) -> Vec<EmailPart> {
                     let binary = decode(tmp_attachment).unwrap();
                     // Use the accurate filename (and path)
                     let file_path = format!("var/tmp/{}", attachment_filename);
+                    attachment_fullname = file_path.to_string();
                     match fs::write(file_path, binary) {
                         Err(e) => println!("{:?}", e),
                         _ => (),
@@ -229,6 +247,8 @@ fn get_body_parts(headers: String, body: String) -> Vec<EmailPart> {
         let email_part = EmailPart {
             header: tmp_header,
             content: tmp_content,
+            is_attachment,
+            attachment_name: attachment_fullname,
         };
         parts.push(email_part);
     }
