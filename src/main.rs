@@ -39,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let eos_url = env::var("EOS_URL").expect("Missing or invalid env var: EOS_URL");
     let eos_username = env::var("EOS_USERNAME").expect("Missing or invalid env var: EOS_USERNAME");
     let eos_password = env::var("EOS_PASSWORD").expect("Missing or invalid env var: EOS_PASSWORD");
-    let eos_token = api::eos::authenticate(
+    let eos_token = api::authenticate(
         eos_username.as_str(),
         eos_password.as_str(),
         eos_url.as_str(),
@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         env::var("COOPTATION_USERNAME").expect("Missing or invalid env var: COOPTATION_USERNAME");
     let cooptation_password =
         env::var("COOPTATION_PASSWORD").expect("Missing or invalid env var: COOPTATION_PASSWORD");
-    let cooptation_token = api::cooptation::authenticate(
+    let cooptation_token = api::authenticate(
         cooptation_username.as_str(),
         cooptation_password.as_str(),
         cooptation_url.as_str(),
