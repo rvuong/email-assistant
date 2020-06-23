@@ -279,3 +279,23 @@ fn get_boundary(input: String) -> String {
 
     boundary_delimiter.to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_simple_value() {
+        let s = "john.doe@domain.tld".to_string();
+        assert_eq!(get_simple_value(s), "john.doe@domain.tld".to_string());
+
+        let s = "John Doe <john.doe@domain.tld>".to_string();
+        assert_eq!(get_simple_value(s), "john.doe@domain.tld".to_string());
+
+        let s = "Message-ID: <989bac4f-277b-84a7-5601-8975e35dfba5@davidson.fr>".to_string();
+        assert_eq!(
+            get_simple_value(s),
+            "989bac4f-277b-84a7-5601-8975e35dfba5@davidson.fr".to_string()
+        );
+    }
+}
