@@ -74,6 +74,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Loops through IMAP messages
     for message in messages.iter() {
+        if message.attachment.is_empty() {
+            info!(
+                "Message \"{}\" has no attachment. Skipped",
+                message.subject.as_str(),
+            );
+
+            continue;
+        }
+
         // Get the EOS User Id
         let email = String::from(message.sender.to_string());
         let eos_user_id =
