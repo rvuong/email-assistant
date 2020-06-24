@@ -31,6 +31,7 @@ Watch a simple use-case [footage](https://www.loom.com/share/e4a876ec15b34b03bff
 
 - NLP actions, including:
   - Extract accurate data from the email body/the attachment file: firstname, lastname, phone number, and email address of the co-opted person.
+  - Convert a HTML message to text/plain (which is requested by the API)
   - Extract the branch ids that the person should be co-opted to.
   - Identify the accurate requested action ("cooptation", ...) from the email subject/body.
 - Multi-messages conversation
