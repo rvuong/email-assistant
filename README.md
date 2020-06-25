@@ -15,7 +15,7 @@ Watch a simple use-case [footage](https://www.loom.com/share/e4a876ec15b34b03bff
   - the users adds an attachment
 - *Email Assistant* is run "by hand"
 - The cooptation resource was created and can be read through *Postman*
-- The attachment was uploaded to the engine server AND to the API server
+  - The attachment was uploaded to the engine server AND to the API server
 - The user receives a generic email Reply
 
 ### Email Assistant does
