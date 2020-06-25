@@ -27,7 +27,7 @@ Watch a simple use-case [footage](https://www.loom.com/share/e4a876ec15b34b03bff
   - with partially mocked data
 - **Send an email** response as a notification
 
-### Email Assistant does not do (yet)
+### Email Assistant does not (yet)
 
 - NLP actions, including:
   - Extract accurate data from the email body/the attachment file: firstname, lastname, phone number, and email address of the co-opted person.
