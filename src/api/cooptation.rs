@@ -45,7 +45,7 @@ pub fn add(email: &Email, user_id: u32, token: String, url: &str) -> Result<(), 
         .file("cv", attachment_path)
         .unwrap();
 
-    let _res = client
+    let _res: reqwest::blocking::Response = client
         .post(url.as_str())
         .headers(headers)
         .multipart(form)

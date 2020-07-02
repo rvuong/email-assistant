@@ -6,14 +6,15 @@ use std::io::Error;
 /**
  * @todo
  */
-pub fn get(_email: &Email, key: &str) -> Result<String, Error> {
+pub fn get(email: &Email, key: &str) -> Result<String, Error> {
     let result = match key {
-        "branch" => String::from("1"),
+        "branch" => String::from("Davidson Paris"),
         "firstname" => String::from("John"),
         "lastname" => String::from("Doe"),
         "email" => String::from("me@domain.tld"),
-        "relation" => get_body_text(_email).unwrap(),
+        "relation" => get_body_text(email).unwrap(),
         "phone" => String::from("01 02 03 04 05"),
+        "purpose" => get_purpose(email).unwrap(),
         _ => {
             warn!("Invalid parameter name required: {}", key);
 
@@ -52,4 +53,15 @@ fn get_body_text(email: &Email) -> Result<String, Error> {
     }
 
     return Ok("// TODO Message not found".to_string());
+}
+
+/**
+ * @todo
+ */
+fn get_purpose(email: &Email) -> Result<String, Error> {
+    if email.subject.to_ascii_lowercase().contains("cooptation") {
+        return Ok("cooptation".to_string());
+    }
+
+    Ok("".to_string())
 }

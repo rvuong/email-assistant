@@ -30,6 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let messages =
         service::inbox::parse(imap_host, imap_username, imap_password, imap_port, debug).unwrap();
+    // TODO Filter messages given their purpose
     if messages.len().eq(&0) {
         // No messages need to be processed
         return Ok(());
@@ -74,6 +75,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Loops through IMAP messages
     for message in messages.iter() {
+        let purpose = api::profiling::get(message, "purpose").unwrap();
+        if purpose.eq("") {
+            info!(
+                "Message \"{}\" not processed: purpose unclear. Skipped",
+                message.subject.as_str(),
+            );
+
+            continue;
+        }
+
         if message.attachment.is_empty() {
             info!(
                 "Message \"{}\" has no attachment. Skipped",

@@ -79,11 +79,7 @@ pub fn parse(
             message_index, email.subject, email.sender
         );
 
-        // TODO Accurate filtering (cooptation related, etc)
-        // if email.subject.contains("cooptation") || email.body.contains("cooptation") {
-        if email.subject.to_ascii_lowercase().contains("cooptation") {
-            messages.push(email);
-        }
+        messages.push(email);
 
         // Sets messages as unread again
         if debug {
