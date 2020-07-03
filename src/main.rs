@@ -2,6 +2,7 @@
 extern crate log;
 extern crate env_logger;
 
+use crate::service::inbox::Email;
 use std::env;
 use std::error::Error;
 
@@ -30,7 +31,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let messages =
         service::inbox::parse(imap_host, imap_username, imap_password, imap_port, debug).unwrap();
-    // TODO Filter messages given their purpose
+    // Filters messages given their purpose ("cooptation")
+    let messages: Vec<Email> = messages
+        .into_iter()
+        .filter(|_mes: &Email| {
+            let purpose = api::profiling::get(_mes, "purpose").unwrap();
+
+            purpose.eq("cooptation")
+        })
+        .collect();
+
     if messages.len().eq(&0) {
         // No messages need to be processed
         return Ok(());
@@ -75,16 +85,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Loops through IMAP messages
     for message in messages.iter() {
-        let purpose = api::profiling::get(message, "purpose").unwrap();
-        if purpose.eq("") {
-            info!(
-                "Message \"{}\" not processed: purpose unclear. Skipped",
-                message.subject.as_str(),
-            );
-
-            continue;
-        }
-
+        // TODO Should be tested for Cooptations only (not for evaluations, for example)
         if message.attachment.is_empty() {
             info!(
                 "Message \"{}\" has no attachment. Skipped",

@@ -13,8 +13,6 @@ struct EosAuthentication {
 }
 
 /**
- * @todo This should be refactored with EOS authenticate() function
- *
  * POST request with url, login, & password. Should return a JSON-encapsulated auth token
  */
 pub fn authenticate(username: &str, password: &str, url: &str) -> Result<String, Error> {
