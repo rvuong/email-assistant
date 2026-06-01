@@ -1,6 +1,6 @@
 # Email Assistant
 
-*Email Assistant* automatically triggers actions, like API requests, when you send it emails.
+*Email Assistant* turns an inbox into an action engine: send an email, trigger an API call.
 
 ## TL;DR
 
